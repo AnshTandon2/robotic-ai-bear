@@ -6,8 +6,8 @@ import pvporcupine
 import struct
 import websockets
 
-assembly_key = 'ea370242ab8c4e96a77affd669e1bd00'
-porcupine_key = "rxNAR+cOa0S34wc6Z0JwTUB3VwBs9UoxyeeRs73k9ddIU1Eeo9lvZg=="
+assembly_key = ''
+porcupine_key = ""
 
 # Audio settings
 FRAMES_PER_BUFFER = 3200
