@@ -10,7 +10,33 @@ import requests
 assembly_key = 'ea370242ab8c4e96a77affd669e1bd00'
 porcupine_key = "rxNAR+cOa0S34wc6Z0JwTUB3VwBs9UoxyeeRs73k9ddIU1Eeo9lvZg=="
 
-# LLM stuff
+# TTS 
+
+def generate_speech(input_text):
+    url = "https://api.openai.com/v1/audio/speech"
+    headers = {
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "tts-1", 
+        "input": input_text,
+        "voice": "alloy"
+    }
+
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()  # Raise an exception for 4xx or 5xx errors
+
+        with open('speech.mp3', "wb") as f:
+            f.write(response.content)
+        
+        print("Speech generated successfully.")
+    except requests.exceptions.RequestException as e:
+        print("Error generating speech:", e)
+
+
+# LLM response
 
 def llm_response(q):
     """client = Groq(
@@ -116,6 +142,7 @@ async def send_receive(stream):
                     if silence_counter >= 5:  # Adjust this threshold as needed
                         print("this the final query: ", final_query)
                         llm_resp = llm_response(final_query)
+                        generate_speech(llm_resp)
                         print(llm_resp)
                         break
                 except websockets.exceptions.ConnectionClosedError as e:
