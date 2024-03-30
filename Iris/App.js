@@ -19,6 +19,8 @@ const firebaseConfig = {
   measurementId: "G-8FKQTK3R78"
 };
 
+const main = "#C7F2A4";
+
 // Initialize Firebase
 const test = async () => {
   try {
@@ -39,7 +41,7 @@ const db = getFirestore(app);
 export default function App() {
   return (
     <View style={styles.container}>
-      <Button title="test" onPress={test}></Button>
+      <Button title="test" onPress={test} style={styles.button}></Button>
       <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
     </View>
@@ -47,10 +49,20 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  button: {
+    borderWidth: 2,
+    borderColor: {main},
+    borderRadius: 25,
+    color: {main},
+    textAlign: "center",
+    fontSize: 24,
   },
 });
