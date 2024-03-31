@@ -8,6 +8,7 @@ import websockets
 import requests
 import uuid
 from playsound import playsound
+import time
 
 assembly_key = 'ea370242ab8c4e96a77affd669e1bd00'
 porcupine_key = "rxNAR+cOa0S34wc6Z0JwTUB3VwBs9UoxyeeRs73k9ddIU1Eeo9lvZg=="
@@ -116,10 +117,12 @@ async def send_receive(stream):
         session_begins = await ws.recv()
         print(session_begins)
         print("Sending messages ...")
-
+        
         async def send():
             nonlocal silence_counter
+            time.sleep(0.001)
             while True:
+                
                 try:
                     data = stream.read(FRAMES_PER_BUFFER, exception_on_overflow=False)
                     data = base64.b64encode(data).decode("utf-8")
@@ -148,7 +151,7 @@ async def send_receive(stream):
                         silence_counter += 1
                     else:
                         silence_counter = 0
-                        final_query = result['text'] + " "
+                        final_query = final_query + result['text'] + ", "
 
                     if silence_counter >= 5:  # Adjust this threshold as needed
                         print("this the final query: ", final_query)
@@ -201,8 +204,9 @@ def start_listening():
             if not wake_word_detected:
                 if keyword_index >= 0:
                     print("Wake word detected!")
-                    wake_word_detected = True  # Change state after wake word is detected
+
                     handle_audio_stream(audio_stream)
+                    wake_word_detected = True  # Change state after wake word is detected
             else:
                 handle_audio_stream(audio_stream)  # Directly handle the audio stream without wake word detection
 

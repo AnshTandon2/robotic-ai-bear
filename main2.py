@@ -148,7 +148,7 @@ async def send_receive(stream):
                         silence_counter += 1
                     else:
                         silence_counter = 0
-                        final_query = result['text'] + " "
+                        final_query = final_query + result['text'] + ", "
 
                     if silence_counter >= 5:  # Adjust this threshold as needed
                         print("this the final query: ", final_query)
