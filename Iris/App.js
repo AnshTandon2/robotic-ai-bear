@@ -62,8 +62,45 @@ const addModule = async (data) => {
   });
 }
 
+function Home() {
+  return (
+    <Text style={{
+      fontFamily: "Verdana",
+      fontWeight: "bold"
+    }}>home</Text>
+  )
+}
+
+function Info() {
+  return (
+    <Text style={{
+      fontFamily: "Verdana",
+      fontWeight: "bold"
+    }}>info</Text>
+  )
+}
+
+function Modules() {
+  return (
+    <Text style={{
+      fontFamily: "Verdana",
+      fontWeight: "bold"
+    }}>modules</Text>
+  )
+}
+
+function renderIt(txt) {
+  if (txt === "home") {
+    return < Home />;
+  } else if (txt === "info") {
+    return < Info />;
+  } else {
+    return < Modules />;
+  }
+}
+
 export default function App() {
-  const [txt, setTxt] = useState("Test");
+  const [txt, setTxt] = useState("home");
 
   return (
     <NativeBaseProvider style={styles.container}>
@@ -74,10 +111,7 @@ export default function App() {
         alignItems: "center",
         justifyContent: "center"
       }}>
-        <Text style={{
-          fontFamily: "Verdana",
-          fontWeight: "bold"
-        }}>{txt}</Text>
+        {renderIt(txt)}
       </View>
 
       <View style={{
