@@ -6,13 +6,18 @@ import pvporcupine
 import struct
 import websockets
 import requests
+import uuid
+from playsound import playsound
 
 assembly_key = 'ea370242ab8c4e96a77affd669e1bd00'
 porcupine_key = "rxNAR+cOa0S34wc6Z0JwTUB3VwBs9UoxyeeRs73k9ddIU1Eeo9lvZg=="
 
+wake_word_detected = False
+
 # TTS 
 
 def generate_speech(input_text):
+
     url = "https://api.openai.com/v1/audio/speech"
     headers = {
         "Authorization": "Bearer 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",
@@ -28,10 +33,15 @@ def generate_speech(input_text):
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()  # Raise an exception for 4xx or 5xx errors
 
-        with open('speech.mp3', "wb") as f:
+        filename = f'speech-{uuid.uuid4()}.mp3'
+        with open(filename, "wb") as f:
             f.write(response.content)
+
+        playsound(filename)
         
         print("Speech generated successfully.")
+
+
     except requests.exceptions.RequestException as e:
         print("Error generating speech:", e)
 
@@ -127,6 +137,7 @@ async def send_receive(stream):
                 await asyncio.sleep(0.01)
 
         async def receive():
+            final_query = ""
             nonlocal silence_counter
             while True:
                 try: 
@@ -137,7 +148,7 @@ async def send_receive(stream):
                         silence_counter += 1
                     else:
                         silence_counter = 0
-                        final_query = result['text']
+                        final_query = result['text'] + " "
 
                     if silence_counter >= 5:  # Adjust this threshold as needed
                         print("this the final query: ", final_query)
@@ -154,7 +165,17 @@ async def send_receive(stream):
 
         await asyncio.gather(send(), receive())
 
+def handle_audio_stream(audio_stream):
+    global wake_word_detected
+    try:
+        print("Starting to send audio...")
+        asyncio.run(send_receive(audio_stream))
+    finally:
+        print("Audio handling completed.")
+
+
 def start_listening():
+    global wake_word_detected
     porcupine = None
     audio_stream = None
 
@@ -176,11 +197,14 @@ def start_listening():
             pcm_unpacked = struct.unpack_from("h" * porcupine.frame_length, pcm)
 
             keyword_index = porcupine.process(pcm_unpacked)
-            if keyword_index >= 0:
-                print("Wake word detected! Starting to send audio...")
-                asyncio.run(send_receive(audio_stream))
-                print("Resuming listening for wake word...")
-                # The listening loop continues, allowing for the process to start over when the wake word is detected again
+
+            if not wake_word_detected:
+                if keyword_index >= 0:
+                    print("Wake word detected!")
+                    wake_word_detected = True  # Change state after wake word is detected
+                    handle_audio_stream(audio_stream)
+            else:
+                handle_audio_stream(audio_stream)  # Directly handle the audio stream without wake word detection
 
     finally:
         if porcupine is not None:
