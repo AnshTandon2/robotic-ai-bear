@@ -143,6 +143,9 @@ async def send_receive(stream):
                     result_str = await ws.recv()
                     result = json.loads(result_str)
                     print(result['text'])
+                    
+
+                        
                     if result['text'] == "":
                         silence_counter += 1
                     else:
@@ -151,6 +154,10 @@ async def send_receive(stream):
 
                     if silence_counter >= 5:  # Adjust this threshold as needed
                         break
+                        
+                    if ("goodbye") in result['text'].lower():
+                        exit()
+                
                 except websockets.exceptions.ConnectionClosedError as e:
                     print(e)
                     break
