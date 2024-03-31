@@ -1,5 +1,8 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { NativeBaseProvider, Container, extendTheme } from 'native-base';
+import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 // Import the functions you need from the SDKs you need
@@ -8,6 +11,9 @@ import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const main = "#379237";
+const secondary = "#C7F2A4";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDBuPmeoud8m_00BlNSLuXXav625KGD1_I",
   authDomain: "iris-49575.firebaseapp.com",
@@ -19,7 +25,14 @@ const firebaseConfig = {
   measurementId: "G-8FKQTK3R78"
 };
 
-const main = "#C7F2A4";
+const config = {
+  useSystemColorMode: false,
+  initialColorMode: secondary,
+};
+
+// extend the theme
+const customTheme = extendTheme({ config });
+
 
 // Initialize Firebase
 const test = async () => {
@@ -35,21 +48,65 @@ const test = async () => {
   }
 };
 
+const change = (tab) => {
+  switch (tab) {
+    case 'home':
+      console.log("home select");
+      return;
+    case 'colors':
+      console.log("home select");
+      return;
+    case 'modules':
+      console.log("home select");
+      return;
+    default:
+      return;
+  }
+  //const main = document.getElementById("main");
+
+  //main.innerHTML = {}
+}
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+//const [tab, setTab] = useState('home');
 
 export default function App() {
+  const [tab, setTab] = useState('home');
+
   return (
-    <View style={styles.container}>
-      <Button title="test" onPress={test} style={styles.button}></Button>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider theme={customTheme}>
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+      }}>
+        <View>
+          <Pressable title='' style={styles.tab} onPress={() => {setTab('home'),
+            change(tab)}}>
+            <Text style={styles.text}>Home</Text>
+          </Pressable>
+        </View>
+        <View>
+          <Pressable title='' style={styles.tab} onPress={() => {setTab('colors'),
+            change(tab)}}>
+            <Text style={styles.text}>Colors</Text>
+          </Pressable>
+        </View>
+        <View>
+          <Pressable title='' style={styles.tab} onPress={() => {setTab('modules'),
+            change(tab)}}>
+            <Text style={styles.text}>Modules</Text>
+          </Pressable>
+        </View>
+      </View>
+      
+    </NativeBaseProvider>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -58,11 +115,38 @@ const styles = StyleSheet.create({
   },
 
   button: {
+    alignItems: 'center',
     borderWidth: 2,
-    borderColor: {main},
-    borderRadius: 25,
-    color: {main},
-    textAlign: "center",
-    fontSize: 24,
+    borderColor: main,
+    justifyContent: 'center',
+    borderRadius: 18,
+    shadowColor: secondary,
+    shadowRadius: 2,
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
   },
+
+  tab: {
+    height: 100,
+    borderWidth: 2,
+    borderColor: main,
+    borderRadius: 18,
+    shadowColor: secondary,
+    shadowRadius: 2,
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 1,
+    paddingVertical: -10,
+    paddingHorizontal: 32,
+    margin: 1,
+    justifyContent: 'center',
+    //position: 'absolute',
+  },
+  text: {
+    color: main,
+    fontSize: 12,
+    fontFamily: "Verdana",
+    fontWeight: "bold",
+  }
 });
