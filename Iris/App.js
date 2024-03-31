@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDoc, setDoc } from "firebase/firestore";
 // Import the functions you need from the SDKs you need
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -37,6 +37,37 @@ const test = async () => {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const initRef = doc(db, "init", "test1");
+const moduleRef = collection(db, "modules");
+
+const getInfo = async () => {
+  const initSnap = await getDoc(initRef);
+  return initSnap;
+}
+
+const setInfo = async (data) => {
+  await setDoc(initRef, {
+    Username: data.Username,
+    Age: data.Age,
+    SpecialNotes: data.SpecialNotes,
+    RestrictedWords: data.RestrictedWords,
+    SelectedModule: data.SelectedModule
+  });
+}
+
+const getModules = async () => {
+  const moduleSnap = await getDocs(moduleRef);
+  return moduleSnap;
+}
+
+const addModule = async (data) => {
+  await addDoc(moduleRef, {
+    Name: data.Name,
+    SysInstruction: data.SysInstruction,
+    UsrInstruction: data.UsrInstruction
+  });
+}
 
 export default function App() {
   return (
