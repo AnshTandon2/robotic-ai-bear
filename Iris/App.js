@@ -1,10 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { NativeBaseProvider, Container, extendTheme } from 'native-base';
 import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDoc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDoc, setDoc, doc } from "firebase/firestore";
 // Import the functions you need from the SDKs you need
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -25,47 +25,7 @@ const firebaseConfig = {
   measurementId: "G-8FKQTK3R78"
 };
 
-const config = {
-  useSystemColorMode: false,
-  initialColorMode: secondary,
-};
-
-// extend the theme
-const customTheme = extendTheme({ config });
-
-
 // Initialize Firebase
-const test = async () => {
-  try {
-    const docRef = await addDoc(collection(db, "users"), {
-      first: "Ada",
-      last: "Lovelace",
-      born: 1815
-    });
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-};
-
-const change = (tab) => {
-  switch (tab) {
-    case 'home':
-      console.log("home select");
-      return;
-    case 'colors':
-      console.log("home select");
-      return;
-    case 'modules':
-      console.log("home select");
-      return;
-    default:
-      return;
-  }
-  //const main = document.getElementById("main");
-
-  //main.innerHTML = {}
-}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -103,36 +63,56 @@ const addModule = async (data) => {
 }
 
 export default function App() {
-  const [tab, setTab] = useState('home');
+  const [txt, setTxt] = useState("Test");
 
   return (
-    <NativeBaseProvider theme={customTheme}>
+    <NativeBaseProvider style={styles.container}>
+      <View style={{
+        height: "100%",
+        width: "auto",
+        backgroundColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
+        <Text style={{
+          fontFamily: "Verdana",
+          fontWeight: "bold"
+        }}>{txt}</Text>
+      </View>
+
       <View style={{
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'flex-end'
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        backgroundColor: secondary,
+        bottom: 50, 
+        width: '90%',
+        alignSelf: "center",
+        alignContent: "center",
+        borderRadius: 18,
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        position: "absolute" 
       }}>
         <View>
-          <Pressable title='' style={styles.tab} onPress={() => {setTab('home'),
-            change(tab)}}>
+          <Pressable title='' style={styles.tab} onPress={() => {setTxt('home')}}>
             <Text style={styles.text}>Home</Text>
           </Pressable>
         </View>
         <View>
-          <Pressable title='' style={styles.tab} onPress={() => {setTab('colors'),
-            change(tab)}}>
-            <Text style={styles.text}>Colors</Text>
+          <Pressable title='' style={styles.tab} onPress={() => {setTxt("info")}}>
+            <Text style={styles.text}>Info</Text>
           </Pressable>
         </View>
         <View>
-          <Pressable title='' style={styles.tab} onPress={() => {setTab('modules'),
-            change(tab)}}>
+          <Pressable title='' style={styles.tab} onPress={() => {setTxt('modules')}}>
             <Text style={styles.text}>Modules</Text>
           </Pressable>
         </View>
       </View>
-      
     </NativeBaseProvider>
   );
 }
@@ -140,7 +120,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -151,8 +131,8 @@ const styles = StyleSheet.create({
     borderColor: main,
     justifyContent: 'center',
     borderRadius: 18,
-    shadowColor: secondary,
-    shadowRadius: 2,
+    shadowColor: main,
+    shadowRadius: 4,
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 1,
     paddingVertical: 12,
@@ -160,24 +140,26 @@ const styles = StyleSheet.create({
   },
 
   tab: {
-    height: 100,
     borderWidth: 2,
     borderColor: main,
     borderRadius: 18,
-    shadowColor: secondary,
-    shadowRadius: 2,
+    shadowColor: main,
+    shadowRadius: 8,
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 1,
-    paddingVertical: -10,
-    paddingHorizontal: 32,
-    margin: 1,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    margin: 10,
+    width: 100,
     justifyContent: 'center',
+    alignItems: 'center',
     //position: 'absolute',
   },
   text: {
-    color: main,
+    color: "#fff",
     fontSize: 12,
     fontFamily: "Verdana",
     fontWeight: "bold",
+    padding: 0,
   }
 });
