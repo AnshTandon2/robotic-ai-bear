@@ -5,7 +5,7 @@ Software:
 - Python
 - React Native
 - OpenAI - GPT API
-- Hume API
+- Custom Multi-Model eLLM (empathetic LLM) | HumeAPI
 
 Hardware:
 - Rasberry Pi
